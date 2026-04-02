@@ -51,16 +51,15 @@ server.js
 
 ## ⚙️ Setup Instructions
 
-1. Clone the repository
-   
-   ```bash
+1. Clone the repository   
+```bash
 git clone https://github.com/nighaar07/Finance-Data-Processing-and-Access-Control-Backend.git
 ```
 
 2. Install dependencies
 ```bash
-   npm install
-   ```
+npm install
+```
 
 3. Create `.env` file
 ```bash
