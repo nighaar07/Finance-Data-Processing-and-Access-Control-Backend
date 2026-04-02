@@ -54,9 +54,9 @@ exports.updateRecord = async (req, res) => {
     }
 
     // only owner can update
-    if (record.createdBy.toString() !== req.user.id) {
-      return res.status(403).json({ message: "Unauthorized" });
-    }
+    //if (record.createdBy.toString() !== req.user.id) {
+      //return res.status(403).json({ message: "Unauthorized" });
+    //}
 
     const updated = await Record.findByIdAndUpdate(
       req.params.id,
@@ -79,9 +79,9 @@ exports.deleteRecord = async (req, res) => {
       return res.status(404).json({ message: "Record not found" });
     }
 
-    if (record.createdBy.toString() !== req.user.id) {
-      return res.status(403).json({ message: "Unauthorized" });
-    }
+    //if (record.createdBy.toString() !== req.user.id) {
+      //return res.status(403).json({ message: "Unauthorized" });
+    //}
 
     await record.deleteOne();
 
