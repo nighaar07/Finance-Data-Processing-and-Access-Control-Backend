@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
+const { getSummary } = require("../controllers/recordController");
+
 const {
   createRecord,
   getRecords,
@@ -7,10 +10,12 @@ const {
   deleteRecord
 } = require("../controllers/recordController");
 
-// Routes
-router.post("/", createRecord);
-router.get("/", getRecords);
-router.put("/:id", updateRecord);
-router.delete("/:id", deleteRecord);
+// Protected routes
+router.post("/", authMiddleware, createRecord);
+router.get("/summary", authMiddleware, getSummary);
+router.get("/", authMiddleware, getRecords);
+router.put("/:id", authMiddleware, updateRecord);
+router.delete("/:id", authMiddleware, deleteRecord);
+
 
 module.exports = router;

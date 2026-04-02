@@ -15,7 +15,8 @@ exports.createRecord = async (req, res) => {
       category,
       date,
       notes,
-      createdBy: "67f123abc123abc123abc123" //from token
+    //createdBy: "67f123abc123abc123abc123" //from token
+      createdBy: req.user.id
     });
 
     await record.save();
@@ -31,7 +32,7 @@ exports.getRecords = async (req, res) => {
   try {
     const { type, category } = req.query;
 
-    let filter = {};
+    let filter = { createdBy: req.user.id };
 
     if (type) filter.type = type;
     if (category) filter.category = category;
@@ -54,9 +55,9 @@ exports.updateRecord = async (req, res) => {
     }
 
     // only owner can update
-    //if (record.createdBy.toString() !== req.user.id) {
-      //return res.status(403).json({ message: "Unauthorized" });
-    //}
+    if (record.createdBy.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
 
     const updated = await Record.findByIdAndUpdate(
       req.params.id,
@@ -79,13 +80,35 @@ exports.deleteRecord = async (req, res) => {
       return res.status(404).json({ message: "Record not found" });
     }
 
-    //if (record.createdBy.toString() !== req.user.id) {
-      //return res.status(403).json({ message: "Unauthorized" });
-    //}
+    if (record.createdBy.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
 
     await record.deleteOne();
 
     res.json({ message: "Record deleted" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+exports.getSummary = async (req, res) => {
+  try {
+    const records = await Record.find({ createdBy: req.user.id });
+
+    let income = 0;
+    let expense = 0;
+
+    records.forEach(r => {
+      if (r.type === "income") income += r.amount;
+      else expense += r.amount;
+    });
+
+    res.json({
+      totalIncome: income,
+      totalExpense: expense,
+      balance: income - expense
+    });
+
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
